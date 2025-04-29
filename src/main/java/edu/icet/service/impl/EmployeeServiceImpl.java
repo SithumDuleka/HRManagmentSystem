@@ -17,6 +17,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     final ModelMapper modelMapper;
     @Override
     public void addEmployee(Employee employee) {
+        if(repository.existsByEmail(employee.getEmail())){
+            throw  new RuntimeException("Email is already Exists");
+        }
         repository.save(modelMapper.map(employee, EmployeeEntity.class));
     }
 
@@ -32,16 +35,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee searchByName(String name) {
-        return null;
+       return null;
     }
 
     @Override
     public Employee searchByID(Integer id) {
-        return null;
+        return repository.searchByID(id);
     }
 
     @Override
     public void updateEmployee(Employee employee) {
+        if(repository.existsById(employee.getId())){
+            repository.save(modelMapper.map(employee,EmployeeEntity.class));
+        }
 
+    }
+
+    @Override
+    public void deleteEmployee(Integer id) {
+        repository.deleteById(id);
     }
 }

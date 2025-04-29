@@ -17,14 +17,10 @@ public class EmployeeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotNull
     private String name;
-    @Email(message = "Email should be vaild")
-    @NotBlank(message = "Email is Mandatory")
-    @NotNull
+    @Column(unique =true)
     private String email;
     @Enumerated(EnumType.STRING)
-    @NotNull
     private Department department;
 
 }
