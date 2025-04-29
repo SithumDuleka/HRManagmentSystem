@@ -24,5 +24,25 @@ public class EmployeeController {
         return employeeService.getAll();
     }
 
+    @GetMapping("/get/{id}")
+    public Employee getById(@PathVariable Integer id) {
+        return employeeService.searchByID(id);
+    }
+
+    @GetMapping("/get-by-name/{name}")
+    public List<Employee> getByName(@PathVariable String name) {
+        return employeeService.searchByName(name);
+    }
+
+    @PutMapping("/update")
+    public void updateEmployee(@Valid @RequestBody Employee employee) {
+        employeeService.updateEmployee(employee);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public void deleteEmployee(@PathVariable Integer id) {
+        employeeService.deleteEmployee(id);
+    }
+
 
 }

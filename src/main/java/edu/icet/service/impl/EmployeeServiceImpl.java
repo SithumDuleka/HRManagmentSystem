@@ -34,25 +34,60 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee searchByName(String name) {
-       return null;
+    public List<Employee> searchByName(String name) {
+        try {
+            List<EmployeeEntity> result = repository.searchByName(name);
+            List<Employee> employeeList = new ArrayList<>();
+            if (!result.isEmpty()) {
+               result.forEach( employeeEntity -> {
+                   employeeList.add(modelMapper.map(employeeEntity,Employee.class));
+               });
+               return employeeList;
+            } else {
+                throw new RuntimeException("Employee not found with name: " + name);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error searching employee by name: " + e.getMessage());
+        }
     }
 
     @Override
     public Employee searchByID(Integer id) {
-        return repository.searchByID(id);
+        try {
+            EmployeeEntity result = repository.searchByid(id);
+            if (result !=null) {
+                return modelMapper.map(result, Employee.class);
+            } else {
+                throw new RuntimeException("Employee not found with ID: " + id);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Error searching employee by ID: " + e.getMessage());
+        }
     }
 
     @Override
     public void updateEmployee(Employee employee) {
-        if(repository.existsById(employee.getId())){
-            repository.save(modelMapper.map(employee,EmployeeEntity.class));
+        try {
+            if (!repository.existsById(employee.getId())) {
+                throw new RuntimeException("Employee not found for update");
+            }
+            EmployeeEntity entity = modelMapper.map(employee, EmployeeEntity.class);
+            repository.save(entity);
+        } catch (Exception e) {
+            throw new RuntimeException("Error updating employee: " + e.getMessage());
         }
-
     }
 
     @Override
     public void deleteEmployee(Integer id) {
-        repository.deleteById(id);
+        try {
+            if (!repository.existsById(id)) {
+                throw new RuntimeException("Employee not found for deletion");
+            }
+
+            repository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Error deleting employee: " + e.getMessage());
+        }
     }
 }
